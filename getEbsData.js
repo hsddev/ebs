@@ -20,7 +20,9 @@ const getEbsData = async () => {
         const connect = await pool.connect();
 
         // Get data from contacts table
-        const contacts = await pool.request().query("SELECT * FROM Contacts");
+        const contacts = await connect
+            .request()
+            .query("SELECT * FROM Contacts");
 
         // Get data from applications table
         const applications = await pool
