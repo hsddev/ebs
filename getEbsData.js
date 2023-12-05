@@ -29,9 +29,9 @@ const getEbsData = async () => {
             .request()
             .query("SELECT * FROM Applications");
 
-        // Changed contacts format
-        const changedUsers = await contacts.recordset.map((contact) => {
-            return {
+        // Create a mapping of contacts by email
+        const contactsByEmail = contacts.recordset.reduce((map, contact) => {
+            map[contact.PERSONAL_EMAIL] = {
                 student_reference: contact.STUDENT_REFERENCE,
                 firstname: contact.FIRST_NAME,
                 email: contact.PERSONAL_EMAIL,
@@ -43,12 +43,41 @@ const getEbsData = async () => {
                 school_title: contact.SCHOOL_DESCRIPTION,
                 school_code: contact.SCHOOL_CODE,
                 marketing_contact_methods: contact.MARKETING_CONTACT_METHODS,
+                applications: [],
             };
+            return map;
+        }, {});
+
+        // Associate applications with contacts by email
+        applications.recordset.forEach((application) => {
+            const email = application.PERSONAL_EMAIL;
+            if (contactsByEmail[email]) {
+                contactsByEmail[email].applications.push({
+                    unit_id: application.UNIT_ID,
+                    course_occurrence: application.COURSE_OCCURRENCE,
+                    course_code: application.COURSE_CODE,
+                    website_advertised_title: application.WEBTITLE,
+                    college_code: application.COLLEGE_CODE,
+                    college_fullname: application.COLLEGE_FULLNAME,
+                    org_l1_code: application.ORG_L1_CODE,
+                    org_l1_fullname: application.ORG_L1_FULLNAME,
+                    org_l2_code: application.ORG_L2_CODE,
+                    org_l2_fullname: application.ORG_L2_FULLNAME,
+                    org_l3_code: application.ORG_L3_CODE,
+                    org_l3_fullname: application.ORG_L3_FULLNAME,
+                    stage: application.STAGE,
+                });
+            }
         });
+
+        // Convert the map to an array
+        const changedUsers = Object.values(contactsByEmail);
+
         return changedUsers;
     } catch (err) {
         console.log(err);
     }
 };
 
+getEbsData().then((x) => console.log(x));
 module.exports = getEbsData;
