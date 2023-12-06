@@ -38,11 +38,13 @@ const {
                 // Step 3: Get the object Id associated with the unit Id
                 const objectId = await findObjectIdOfUnitId(application);
 
+                let n = 0;
                 // Step 4: Associate the application with the contact
-                await associateApplicationToContact(
-                    contactEmail,
-                    contactId,
-                    objectId
+                await associateApplicationToContact(contactId, objectId);
+                console.log(
+                    `Processing association for contact ${contactEmail} - id ${contactId} with applications ${n++}/${
+                        contact.applications.length
+                    }`
                 );
             }
         } catch (error) {

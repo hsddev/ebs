@@ -82,15 +82,8 @@ const createApplication = async (properties) => {
 };
 
 // Associate the object with contact
-const associateApplicationToContact = async (
-    contactEmail,
-    contactId,
-    applicationId
-) => {
+const associateApplicationToContact = async (contactId, applicationId) => {
     try {
-        console.log(
-            `Processing association for contact ${contactEmail} - id ${contactId} with application ${applicationId}`
-        );
         const res = await axios({
             method: "put",
             url: `https://api.hubapi.com/crm/v4/objects/contact/${contactId}/associations/applications/${applicationId}`,
