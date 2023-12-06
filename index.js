@@ -33,7 +33,7 @@ const {
             // Step 1: Get contact ID from contact email
             const contactId = await findContactIdInHubspot(contactEmail);
 
-            let n = 0;
+            let n = 1;
 
             // Step 2: Loop through each application and check if it exists
             for (const application of contact.applications) {
