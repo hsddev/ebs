@@ -48,7 +48,7 @@ const {
         }
 
         console.log(
-            `Processing association for contact ${contactEmail} with ${contact.applications.length} applications`
+            `Successfully associated contact ${contactEmail} with ${contact.applications.length} applications.`
         );
     }
 
