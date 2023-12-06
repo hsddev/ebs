@@ -33,8 +33,6 @@ const {
             // Step 1: Get contact ID from contact email
             const contactId = await findContactIdInHubspot(contactEmail);
 
-            let n = 1;
-
             // Step 2: Loop through each application and check if it exists
             for (const application of contact.applications) {
                 // Step 3: Get the object Id associated with the unit Id
@@ -42,17 +40,16 @@ const {
 
                 // Step 4: Associate the application with the contact
                 await associateApplicationToContact(contactId, objectId);
-                console.log(
-                    `Processing association for contact ${contactEmail} - id ${contactId} with applications ${n++}/${
-                        contact.applications.length
-                    }`
-                );
             }
         } catch (error) {
             console.error(
                 `Error processing contact with email ${contactEmail}: ${error.message}`
             );
         }
+
+        console.log(
+            `Processing association for contact ${contactEmail} with ${contact.applications.length} applications`
+        );
     }
 
     console.log("###############################");
