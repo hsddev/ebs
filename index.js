@@ -33,12 +33,13 @@ const {
             // Step 1: Get contact ID from contact email
             const contactId = await findContactIdInHubspot(contactEmail);
 
+            let n = 0;
+
             // Step 2: Loop through each application and check if it exists
             for (const application of contact.applications) {
                 // Step 3: Get the object Id associated with the unit Id
                 const objectId = await findObjectIdOfUnitId(application);
 
-                let n = 0;
                 // Step 4: Associate the application with the contact
                 await associateApplicationToContact(contactId, objectId);
                 console.log(
