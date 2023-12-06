@@ -132,7 +132,13 @@ const createApplication = async (properties) => {
                 "Content-Type": "application/json",
             },
             data: {
-                properties: properties,
+                properties: {
+                    ...properties,
+                    hs_pipeline: 246305223,
+                    hs_pipeline_stage: helpers.stageToInternalId(
+                        properties.stage
+                    ),
+                },
             },
         });
         return res;
