@@ -39,7 +39,11 @@ const {
                 const objectId = await findObjectIdOfUnitId(application);
 
                 // Step 4: Associate the application with the contact
-                await associateApplicationToContact(contactId, objectId);
+                await associateApplicationToContact(
+                    contactEmail,
+                    contactId,
+                    objectId
+                );
             }
         } catch (error) {
             console.error(
