@@ -1,10 +1,10 @@
 const getEbsData = require("./getEbsData");
-const addToHubspot = require("./addToHubspot");
 const {
+    addContactsToHubspot,
     findObjectIdOfUnitId,
     findContactIdInHubspot,
     associateApplicationToContact,
-} = require("./findInHubspot");
+} = require("./hubspotApi");
 
 (async () => {
     // App log
@@ -24,7 +24,7 @@ const {
     console.log("Will process: %d contact(s)", contactToHubspot.length);
 
     // Add contacts list to hubspot
-    await addToHubspot(contactToHubspot);
+    await addContactsToHubspot(contactToHubspot);
 
     for (const contact of contacts) {
         const contactEmail = contact.email;
