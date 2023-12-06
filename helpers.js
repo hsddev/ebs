@@ -31,6 +31,7 @@ helpers.stageToInternalId = (stage) => {
         enrolled: 411900864,
         withdrawn: 411900865,
         "course cancelled": 411900866,
+        applied: 417475574,
     };
 
     for (const id in stageIdMap) {
