@@ -93,19 +93,23 @@ const findObjectIdOfUnitId = async (application) => {
         });
 
         // Check if the unit Id exists in the response
-        const applicationExists = res.data.results.some(
-            (app) => app.properties.unit_id == application.unit_id
-        );
+        const applicationExists =
+            res.data.results.filter(
+                (app) => app.properties.unit_id == application.unit_id
+            ).length > 0
+                ? true
+                : false;
 
         if (!applicationExists) {
             const createdApplication = await createApplication(application);
+
             return createdApplication.data.id;
         } else {
             return res.data.results
                 .filter(
                     (item) => item.properties.unit_id == application.unit_id
                 )
-                .map((item) => item.id);
+                .map((item) => item.id)[0];
         }
     } catch (err) {
         console.log(err);
@@ -171,6 +175,22 @@ const associateApplicationToContact = async (contactId, applicationId) => {
     }
 };
 
+findObjectIdOfUnitId({
+    unit_id: 1155290,
+    course_occurrence: "24",
+    course_code: "10394",
+    website_advertised_title:
+        "Sixth Form College A Levels (Application Programme)",
+    college_code: "1",
+    college_name: "City and Islington College",
+    org_level_1_code: "111",
+    org_level_1_name: "Sixth Form College (CANDI)",
+    org_level_2_code: "221",
+    org_level_2_name: "Sixth Form Year 12 (CANDI)",
+    org_level_3_code: "3163",
+    org_level_3_name: "Sixth Form College A Level Programmes (CANDI)",
+    stage: "Withdrawn",
+});
 // Export module
 module.exports = {
     addContactsToHubspot,
