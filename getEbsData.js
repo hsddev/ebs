@@ -79,5 +79,5 @@ const getEbsData = async () => {
     }
 };
 
-getEbsData().then((x) => console.log(x[0]));
+getEbsData().then((x) => console.log(x[1]));
 module.exports = getEbsData;
