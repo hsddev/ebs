@@ -61,6 +61,34 @@ const addContactsToHubspot = async (contacts) => {
     console.log("Hubspot function has been finished!");
 };
 
+// Get all applications
+const getAllApplications = async (url, accumulator = []) => {
+    try {
+        const res = await axios({
+            url,
+            method: "get",
+            headers: {
+                Authorization:
+                    "Bearer pat-eu1-28ce7e46-5c39-45b2-b93a-405138c9c9fc",
+                "Content-Type": "application/json",
+            },
+        });
+
+        const data = res.data;
+        accumulator.push(...data.results);
+
+        if (data.paging && data.paging.next && data.paging.next.link) {
+            // Make sure to return the result of the recursive call
+            return getAllApplications(data.paging.next.link, accumulator);
+        } else {
+            return accumulator;
+        }
+    } catch (error) {
+        console.error("Error fetching data:", error.message);
+        return accumulator;
+    }
+};
+
 // Get contact Id from contact email
 const findContactIdInHubspot = async (contactEmail) => {
     try {
@@ -82,34 +110,32 @@ const findContactIdInHubspot = async (contactEmail) => {
 // Find Object Id associate to the unit Id
 const findObjectIdOfUnitId = async (application) => {
     try {
-        const res = await axios({
-            url: "https://api.hubapi.com/crm/v3/objects/applications?properties=unit_id",
-            method: "get",
-            headers: {
-                Authorization:
-                    "Bearer pat-eu1-28ce7e46-5c39-45b2-b93a-405138c9c9fc",
-                "Content-Type": "application/json",
-            },
-        });
+        // Get all applications
+        const res = await getAllApplications(
+            "https://api.hubapi.com/crm/v3/objects/applications?properties=website_advertised_title&properties=unit_id"
+        );
 
         // Check if the unit Id exists in the response
         const applicationExists =
-            res.data.results.filter(
-                (app) => app.properties.unit_id == application.unit_id
+            res.filter(
+                (app) =>
+                    app.properties.unit_id == application.unit_id &&
+                    app.properties.website_advertised_title ===
+                        application.website_advertised_title
             ).length > 0
                 ? true
                 : false;
 
-        if (!applicationExists) {
-            const createdApplication = await createApplication(application);
-
-            return createdApplication.data.id;
-        } else {
-            return res.data.results
+        if (applicationExists) {
+            return await res
                 .filter(
                     (item) => item.properties.unit_id == application.unit_id
                 )
                 .map((item) => item.id)[0];
+        } else {
+            const createdApplication = await createApplication(application);
+
+            return createdApplication.data.id;
         }
     } catch (err) {
         console.log(err);
@@ -117,13 +143,6 @@ const findObjectIdOfUnitId = async (application) => {
     }
 };
 
-/*
-{
-                    website_advertised_title: "Spanish",
-                    hs_pipeline: 246305223,
-                    hs_pipeline_stage: 411851999,
-}
-*/
 // Create an application if it doesn't already exist
 const createApplication = async (properties) => {
     try {
@@ -152,45 +171,69 @@ const createApplication = async (properties) => {
 };
 
 // Associate the object with contact
-const associateApplicationToContact = async (contactId, applicationId) => {
+const associateApplicationToContact = async (
+    contactEmail,
+    contactId,
+    applicationId
+) => {
     try {
-        const res = await axios({
-            method: "put",
-            url: `https://api.hubapi.com/crm/v4/objects/contact/${contactId}/associations/applications/${applicationId}`,
+        // Check the applicationId if it's valid
+        if (!applicationId) return;
+
+        // Check if the contact already have the application
+        const contactsInApplication = await axios({
+            method: "GET",
+            url: `https://api.hubapi.com/crm/v3/objects/applications/${applicationId}?associations=contact`,
             headers: {
                 Authorization:
                     "Bearer pat-eu1-28ce7e46-5c39-45b2-b93a-405138c9c9fc",
                 "Content-Type": "application/json",
             },
-            data: JSON.stringify([
-                {
-                    associationCategory: "USER_DEFINED",
-                    associationTypeId: 54,
-                },
-            ]),
         });
-        return res;
+
+        const contactExists = contactsInApplication.data
+            ? contactsInApplication.data.associations
+                ? contactsInApplication.data.associations.contacts.results.filter(
+                      (contact) => contact.id == contactId
+                  ).length > 0
+                    ? true
+                    : false
+                : undefined
+            : undefined;
+
+        if (contactExists) {
+            console.log(
+                `Contact ${contactEmail} with id ${contactId} already joined the application`
+            );
+        } else {
+            try {
+                await axios({
+                    method: "put",
+                    url: `https://api.hubapi.com/crm/v4/objects/contact/${contactId}/associations/applications/${applicationId}`,
+                    headers: {
+                        Authorization:
+                            "Bearer pat-eu1-28ce7e46-5c39-45b2-b93a-405138c9c9fc",
+                        "Content-Type": "application/json",
+                    },
+                    data: JSON.stringify([
+                        {
+                            associationCategory: "USER_DEFINED",
+                            associationTypeId: 54,
+                        },
+                    ]),
+                });
+                console.log(
+                    `Created an association between contact ${contactEmail} with id ${contactId} and the application ${applicationId}`
+                );
+            } catch (err) {
+                return err;
+            }
+        }
     } catch (err) {
         console.log(err);
     }
 };
 
-findObjectIdOfUnitId({
-    unit_id: 1155290,
-    course_occurrence: "24",
-    course_code: "10394",
-    website_advertised_title:
-        "Sixth Form College A Levels (Application Programme)",
-    college_code: "1",
-    college_name: "City and Islington College",
-    org_level_1_code: "111",
-    org_level_1_name: "Sixth Form College (CANDI)",
-    org_level_2_code: "221",
-    org_level_2_name: "Sixth Form Year 12 (CANDI)",
-    org_level_3_code: "3163",
-    org_level_3_name: "Sixth Form College A Level Programmes (CANDI)",
-    stage: "Withdrawn",
-});
 // Export module
 module.exports = {
     addContactsToHubspot,

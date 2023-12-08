@@ -30,26 +30,30 @@ const getEbsData = async () => {
             .query("SELECT * FROM Applications");
 
         // Create a mapping of contacts by email
-        const contactsByEmail = contacts.recordset.reduce((map, contact) => {
-            map[contact.PERSONAL_EMAIL] = {
-                student_reference: contact.STUDENT_REFERENCE,
-                firstname: contact.FIRST_NAME,
-                email: contact.PERSONAL_EMAIL,
-                lastname: contact.LAST_NAME,
-                date_of_birth: contact.DATE_OF_BIRTH,
-                marketing_consent: contact.MARKETING_CONSENT,
-                phone: contact.MOBILE_PHONE_NUMBER,
-                zip: contact.POSTAL_CODE,
-                school_title: contact.SCHOOL_DESCRIPTION,
-                school_code: contact.SCHOOL_CODE,
-                marketing_contact_methods: contact.MARKETING_CONTACT_METHODS,
-                applications: [],
-            };
-            return map;
-        }, {});
+        const contactsByEmail = await contacts.recordset.reduce(
+            (map, contact) => {
+                map[contact.PERSONAL_EMAIL] = {
+                    student_reference: contact.STUDENT_REFERENCE,
+                    firstname: contact.FIRST_NAME,
+                    email: contact.PERSONAL_EMAIL,
+                    lastname: contact.LAST_NAME,
+                    date_of_birth: contact.DATE_OF_BIRTH,
+                    marketing_consent: contact.MARKETING_CONSENT,
+                    phone: contact.MOBILE_PHONE_NUMBER,
+                    zip: contact.POSTAL_CODE,
+                    school_title: contact.SCHOOL_DESCRIPTION,
+                    school_code: contact.SCHOOL_CODE,
+                    marketing_contact_methods:
+                        contact.MARKETING_CONTACT_METHODS,
+                    applications: [],
+                };
+                return map;
+            },
+            {}
+        );
 
         // Associate applications with contacts by email
-        applications.recordset.forEach((application) => {
+        await applications.recordset.forEach((application) => {
             const email = application.PERSONAL_EMAIL;
             if (contactsByEmail[email]) {
                 contactsByEmail[email].applications.push({

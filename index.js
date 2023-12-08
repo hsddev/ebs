@@ -26,8 +26,8 @@ const {
     // Add contacts list to hubspot
     await addContactsToHubspot(contactToHubspot);
 
-    for (const contact of contacts) {
-        const contactEmail = contact.email;
+    for (let contact of contacts) {
+        let contactEmail = contact.email;
 
         try {
             // Step 1: Get contact ID from contact email
@@ -39,7 +39,11 @@ const {
                 const objectId = await findObjectIdOfUnitId(application);
 
                 // Step 4: Associate the application with the contact
-                await associateApplicationToContact(contactId, objectId);
+                await associateApplicationToContact(
+                    contactEmail,
+                    contactId,
+                    objectId
+                );
             }
         } catch (error) {
             console.error(
