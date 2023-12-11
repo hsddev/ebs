@@ -1,4 +1,4 @@
-// const getEbsData = require("./getEbsData");
+const getEbsData = require("./getEbsData");
 const {
     addContactsToHubspot,
     findObjectIdOfUnitId,
@@ -24,7 +24,7 @@ const {
     console.log("Will process: %d contact(s)", contactToHubspot.length);
 
     // Add contacts list to hubspot
-    // await addContactsToHubspot(contactToHubspot);
+    await addContactsToHubspot(contactToHubspot);
 
     for (let contact of contacts) {
         let contactEmail = contact.email;
