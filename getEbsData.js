@@ -38,15 +38,15 @@ const getEbsData = async () => {
                     email: contact.PERSONAL_EMAIL,
                     lastname: contact.LAST_NAME,
                     date_of_birth: contact.DATE_OF_BIRTH,
-                    marketing_consent: contact.MARKETING_CONSENT,
-                    phone: contact.PHONE_NUMBER,
-                    mobilephone: contact.MOBILE_PHONE_NUMBER,
-                    zip: contact.POSTAL_CODE,
-                    school_title: contact.SCHOOL_DESCRIPTION,
+                    marketing_consent: contact.MARKETING_CONSENT || undefined,
+                    phone: contact.PHONE_NUMBER || undefined,
+                    mobilephone: contact.MOBILE_PHONE_NUMBER || undefined,
+                    zip: contact.POSTAL_CODE || undefined,
+                    school_title: contact.SCHOOL_DESCRIPTION || undefined,
                     school_code: contact.SCHOOL_CODE,
                     // nationality: contact.NATIONALITY,
                     marketing_contact_methods:
-                        contact.MARKETING_CONTACT_METHODS,
+                        contact.MARKETING_CONTACT_METHODS || undefined,
                     applications: [],
                 };
                 return map;
@@ -85,5 +85,4 @@ const getEbsData = async () => {
     }
 };
 
-getEbsData().then((x) => console.log(x[0]));
 module.exports = getEbsData;
