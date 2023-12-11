@@ -43,6 +43,7 @@ const getEbsData = async () => {
                     zip: contact.POSTAL_CODE,
                     school_title: contact.SCHOOL_DESCRIPTION,
                     school_code: contact.SCHOOL_CODE,
+                    nationality: contact.NATIONALITY,
                     marketing_contact_methods:
                         contact.MARKETING_CONTACT_METHODS,
                     applications: [],

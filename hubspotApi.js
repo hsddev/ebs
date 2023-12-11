@@ -203,7 +203,7 @@ const associateApplicationToContact = async (
 
         if (contactExists) {
             console.log(
-                `Contact ${contactEmail} with id ${contactId} already joined the application`
+                `Contact ${contactEmail} with id ${contactId} already joined the application id ${applicationId}`
             );
         } else {
             try {
