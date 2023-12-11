@@ -47,6 +47,8 @@ const getEbsData = async () => {
                     // nationality: contact.NATIONALITY,
                     marketing_contact_methods:
                         contact.MARKETING_CONTACT_METHODS || undefined,
+                    study_location_description:
+                        contact.STUDY_LOCATION_DESCRIPTION || undefined,
                     applications: [],
                 };
                 return map;
