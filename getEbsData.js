@@ -77,6 +77,7 @@ const getEbsData = async () => {
                     org_level_2_name: application.ORG_L2_FULLNAME,
                     org_level_3_code: application.ORG_L3_CODE,
                     org_level_3_name: application.ORG_L3_FULLNAME,
+                    application_created_date: application.CREATED_DATE,
                     stage: application.STAGE,
                 });
             }
