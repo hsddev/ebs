@@ -16,6 +16,7 @@ const pool = new sql.ConnectionPool({
 
 const getEbsData = async () => {
     try {
+        console.log(process.env.DB_USER);
         // Connect to database
         const connect = await pool.connect();
 
