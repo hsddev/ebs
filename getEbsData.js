@@ -7,7 +7,7 @@ const pool = new sql.ConnectionPool({
     password: process.env.DB_USER_PASSWORD,
     server: process.env.DB_SERVER,
     database: process.env.DB_NAME,
-    port: process.env.DB_PORT,
+    port: Number(process.env.DB_PORT),
     options: {
         encrypt: true,
         trustServerCertificate: true,
@@ -16,7 +16,6 @@ const pool = new sql.ConnectionPool({
 
 const getEbsData = async () => {
     try {
-        console.log(process.env.DB_USER);
         // Connect to database
         const connect = await pool.connect();
 

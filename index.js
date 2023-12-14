@@ -1,4 +1,7 @@
 const dotenv = require("dotenv");
+
+dotenv.config({});
+
 const getEbsData = require("./getEbsData");
 const {
     addContactsToHubspot,
@@ -7,8 +10,6 @@ const {
     associateApplicationToContact,
 } = require("./hubspotApi");
 
-// Middleware
-dotenv.config({});
 
 (async () => {
     // App log
