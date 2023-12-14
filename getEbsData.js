@@ -3,11 +3,11 @@ const sql = require("mssql");
 
 // Database configuration
 const pool = new sql.ConnectionPool({
-    user: "hubspot",
-    password: "v6HiIUykazx4LxK55i0d",
-    server: "51.104.3.79",
-    database: "ebsintegration_dmz",
-    port: 1433,
+    user: process.env.DB_USER,
+    password: process.env.DB_USER_PASSWORD,
+    server: process.env.DB_SERVER,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT,
     options: {
         encrypt: true,
         trustServerCertificate: true,
@@ -47,12 +47,6 @@ const getEbsData = async () => {
                     // nationality: contact.NATIONALITY,
                     marketing_contact_methods:
                         contact.MARKETING_CONTACT_METHODS || undefined,
-                    study_location_code:
-                        contact.STUDY_LOCATION_CODE || undefined,
-                    study_location_description:
-                        contact.STUDY_LOCATION_DESCRIPTION || undefined,
-                    study_location_postcode:
-                        contact.STUDY_LOCATION_POSTCODE || undefined,
                     applications: [],
                 };
                 return map;
@@ -78,6 +72,14 @@ const getEbsData = async () => {
                     org_level_3_code: application.ORG_L3_CODE,
                     org_level_3_name: application.ORG_L3_FULLNAME,
                     application_created_date: application.CREATED_DATE,
+                    study_location_code:
+                        application.STUDY_LOCATION_CODE || undefined,
+                    study_location_description:
+                        application.STUDY_LOCATION_DESCRIPTION || undefined,
+                    study_location_postcode:
+                        application.STUDY_LOCATION_POSTCODE || undefined,
+                    qualification_type:
+                        application.QUALIFICATION_TYPE || undefined,
                     stage: application.STAGE,
                 });
             }
