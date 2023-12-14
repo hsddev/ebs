@@ -185,8 +185,7 @@ const associateApplicationToContact = async (
             method: "GET",
             url: `https://api.hubapi.com/crm/v3/objects/applications/${applicationId}?associations=contact`,
             headers: {
-                Authorization:
-                    "Bearer pat-eu1-28ce7e46-5c39-45b2-b93a-405138c9c9fc",
+                Authorization: process.env.HUBSPOT_PRIVATE_KEY,
                 "Content-Type": "application/json",
             },
         });
