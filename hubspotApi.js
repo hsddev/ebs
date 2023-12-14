@@ -22,8 +22,7 @@ const addContactsToHubspot = async (contacts) => {
                     method: "post",
                     url: "https://api.hubapi.com/contacts/v1/contact/batch",
                     headers: {
-                        Authorization:
-                            "Bearer pat-eu1-28ce7e46-5c39-45b2-b93a-405138c9c9fc",
+                        Authorization: process.env.HUBSPOT_PRIVATE_KEY,
                         "Content-Type": "application/json",
                     },
                     data: list.map((contact) => {
@@ -68,8 +67,7 @@ const getAllApplications = async (url, accumulator = []) => {
             url,
             method: "get",
             headers: {
-                Authorization:
-                    "Bearer pat-eu1-28ce7e46-5c39-45b2-b93a-405138c9c9fc",
+                Authorization: process.env.HUBSPOT_PRIVATE_KEY,
                 "Content-Type": "application/json",
             },
         });
@@ -96,8 +94,7 @@ const findContactIdInHubspot = async (contactEmail) => {
             method: "get",
             url: `https://api.hubapi.com/contacts/v1/contact/email/${contactEmail}/profile`,
             headers: {
-                Authorization:
-                    "Bearer pat-eu1-28ce7e46-5c39-45b2-b93a-405138c9c9fc",
+                Authorization: process.env.HUBSPOT_PRIVATE_KEY,
                 "Content-Type": "application/json",
             },
         });
@@ -150,8 +147,7 @@ const createApplication = async (properties) => {
             method: "post",
             url: "https://api.hubspot.com/crm/v3/objects/2-120350606",
             headers: {
-                Authorization:
-                    "Bearer pat-eu1-28ce7e46-5c39-45b2-b93a-405138c9c9fc",
+                Authorization: process.env.HUBSPOT_PRIVATE_KEY,
                 "Content-Type": "application/json",
             },
             data: {
@@ -210,8 +206,7 @@ const associateApplicationToContact = async (
                     method: "put",
                     url: `https://api.hubapi.com/crm/v4/objects/contact/${contactId}/associations/applications/${applicationId}`,
                     headers: {
-                        Authorization:
-                            "Bearer pat-eu1-28ce7e46-5c39-45b2-b93a-405138c9c9fc",
+                        Authorization: process.env.HUBSPOT_PRIVATE_KEY,
                         "Content-Type": "application/json",
                     },
                     data: JSON.stringify([
