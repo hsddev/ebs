@@ -124,11 +124,16 @@ const findObjectIdOfUnitId = async (application) => {
                 : false;
 
         if (applicationExists) {
-            return await res
+            const applicationId = await res
                 .filter(
                     (item) => item.properties.unit_id == application.unit_id
                 )
                 .map((item) => item.id)[0];
+
+            // Update the existing application properties
+            await updateApplicationData(applicationId, application);
+
+            return applicationId;
         } else {
             const createdApplication = await createApplication(application);
 
@@ -223,6 +228,31 @@ const associateApplicationToContact = async (
                 return err;
             }
         }
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+// Update application data if exist
+const updateApplicationData = async (applicationId, newProperties) => {
+    try {
+        const res = await axios({
+            method: "patch",
+            url: `https://api.hubspot.com/crm/v3/objects/2-120350606/${applicationId}`,
+            headers: {
+                Authorization: process.env.HUBSPOT_PRIVATE_KEY,
+                "Content-Type": "application/json",
+            },
+            data: {
+                properties: {
+                    ...newProperties,
+                    hs_pipeline_stage: helpers.stageToInternalId(
+                        newProperties.stage
+                    ),
+                },
+            },
+        });
+        return res;
     } catch (err) {
         console.log(err);
     }

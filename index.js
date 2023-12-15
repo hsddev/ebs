@@ -10,7 +10,6 @@ const {
     associateApplicationToContact,
 } = require("./hubspotApi");
 
-
 (async () => {
     // App log
     console.log("Hubspot App script started");
