@@ -54,7 +54,7 @@ const getEbsData = async () => {
         );
 
         // Associate applications with contacts by email
-        await applications_db.recordset.forEach((application) => {
+        await applications.recordset.forEach((application) => {
             const email = application.PERSONAL_EMAIL;
 
             if (contactsByEmail[email]) {
