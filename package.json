@@ -1,0 +1,24 @@
+{
+    "dependencies": {
+        "async": "^3.2.5",
+        "axios": "^1.6.2",
+        "dotenv": "^16.3.1",
+        "jest": "^29.7.0",
+        "mssql": "^10.0.1",
+        "nodemailer": "^6.9.13"
+    },
+    "name": "ebs-hubspot",
+    "version": "1.0.0",
+    "main": "index.js",
+    "directories": {
+        "test": "tests"
+    },
+    "scripts": {
+        "test": "jest --watch",
+        "start": "node index.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": ""
+}
