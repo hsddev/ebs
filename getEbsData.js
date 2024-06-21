@@ -1,6 +1,7 @@
 // Dependencies
 const sql = require("mssql");
 const helpers = require("./helpers");
+const emailValidator = require("email-validator"); // Add this line
 
 // Database configuration
 const pool = new sql.ConnectionPool({
@@ -22,22 +23,28 @@ const getEbsData = async () => {
 
         // Get data from contacts table
         const contacts = await connect
-          .request()
-          .query("SELECT * FROM Contacts");
+            .request()
+            .query("SELECT * FROM Contacts");
 
-        // DONE: bugfix: changed pool => connect
         // Get data from applications table
         const applications = await connect
-          .request()
-          .query("SELECT * FROM Applications");
+            .request()
+            .query("SELECT * FROM Applications");
 
-        // DONE: small fix: removed await
         // Create a mapping of contacts by email
         let contactsByEmail = contacts.recordset.reduce((map, contact) => {
-            map[contact.PERSONAL_EMAIL] = {
+            const email = contact.PERSONAL_EMAIL.toLowerCase().trim();
+
+            // Validate email
+            if (!emailValidator.validate(email)) {
+                console.log(`Invalid email: ${email}`);
+                return map;
+            }
+
+            map[email] = {
                 firstname: contact.FIRST_NAME,
                 student_reference: contact.STUDENT_REFERENCE,
-                email: contact.PERSONAL_EMAIL.toLowerCase().trim(),
+                email: email,
                 lastname: contact.LAST_NAME,
                 date_of_birth: contact.DATE_OF_BIRTH,
                 marketing_consent: contact.MARKETING_CONSENT || undefined,
@@ -52,14 +59,11 @@ const getEbsData = async () => {
                 applications: [],
             };
             return map;
-        },
-        {}
-      );
+        }, {});
 
-        // DONE: small fix: removed await
         // Associate applications with contacts by email
         applications.recordset.forEach((application) => {
-            const email = application.PERSONAL_EMAIL;
+            const email = application.PERSONAL_EMAIL.toLowerCase().trim();
 
             if (contactsByEmail[email]) {
                 const contact = contactsByEmail[email];
@@ -69,7 +73,7 @@ const getEbsData = async () => {
                     student_first_name: contact.firstname,
                     student_last_name: contact.lastname,
                     student_age: contact.age,
-                    email: contact.email.toLowerCase().trim(),
+                    email: contact.email,
                     unitid: application.UNIT_ID,
                     course_occurrence: application.COURSE_OCCURRENCE,
                     course_code: application.COURSE_CODE,
@@ -83,16 +87,20 @@ const getEbsData = async () => {
                     org_level_3_code: application.ORG_L3_CODE,
                     org_level_3_name: application.ORG_L3_FULLNAME,
                     application_created_date:
-                      application.APPLICATION_CREATED_DATE,
+                        application.APPLICATION_CREATED_DATE,
                     study_location_code:
-                      application.STUDY_LOCATION_CODE || undefined,
+                        application.STUDY_LOCATION_CODE || undefined,
                     study_location_description:
-                      application.STUDY_LOCATION_DESCRIPTION || undefined,
-                    study_location_postcode: application.STUDY_LOCATION_POSTCODE || undefined,
+                        application.STUDY_LOCATION_DESCRIPTION || undefined,
+                    study_location_postcode:
+                        application.STUDY_LOCATION_POSTCODE || undefined,
                     postal_code: contact.zip || undefined,
                     qualification_type:
-                      application.QUALIFICATION_TYPE || undefined,
+                        application.QUALIFICATION_TYPE || undefined,
                     stage: application.STAGE.toLowerCase().trim(),
+                    marketing_contact_methods:
+                        contact.marketing_contact_methods || undefined,
+                    marketing_consent: contact.marketing_consent || undefined,
                 });
             }
         });
